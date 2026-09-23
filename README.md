@@ -1,3 +1,5 @@
+<img alt="Matter logo" src="https://upload.wikimedia.org/wikipedia/commons/9/99/Logo_of_Matter_connectivity_standard.svg" width="250">
+
 # T8-7X-thread-proxy
 
 Matter-over-Thread control of a **Nanlite PavoTube T8-7X** from a Seeed XIAO ESP32-C6,
@@ -15,6 +17,7 @@ tube. That project's Wi-Fi web console is gone; Thread replaces it.
 ---
 
 ## Hardware
+<img alt="Hardware photo" src="images/hardware.jpg" width="750">
 
 | Part | Notes |
 |---|---|
