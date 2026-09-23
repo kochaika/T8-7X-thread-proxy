@@ -1,0 +1,89 @@
+menu "T8-7X Thread Proxy"
+
+    menu "DMX512 output"
+
+        config T8_DMX_TX_GPIO
+            int "DMX TX GPIO (TP8485E DI)"
+            default 22
+            help
+                XIAO ESP32-C6 pad D4 on the Seeed RS485 breakout.
+
+        config T8_DMX_DE_GPIO
+            int "DMX driver-enable GPIO (TP8485E DE + /RE)"
+            default 2
+            help
+                XIAO ESP32-C6 pad D2. DE is NOT automatic on this board: held high, the
+                transceiver drives the bus; left low nothing reaches the fixture no matter
+                how correct the UART is.
+
+        config T8_DMX_BREAK_US
+            int "DMX BREAK length (us)"
+            default 100
+            range 92 1000
+            help
+                DMX512 specifies a minimum of 92 us. Preemption only makes it longer, which
+                is legal.
+
+        config T8_DMX_MAB_US
+            int "DMX mark-after-break length (us)"
+            default 20
+            range 8 1000
+            help
+                DMX512 specifies a minimum of 8 us.
+
+        config T8_DMX_TASK_PRIORITY
+            int "DMX frame task priority"
+            default 3
+            range 1 10
+            help
+                Above ordinary application tasks so a busy Matter stack cannot stall the
+                fixture, and well below the OpenThread/lwIP tasks so the radio always wins.
+
+    endmenu
+
+    menu "Fixture"
+
+        config T8_DMX_START_ADDRESS
+            int "Default DMX start address"
+            default 100
+            range 1 512
+            help
+                Factory default, used when nothing is stored in NVS. The fixture's own start
+                address cannot be read back over plain DMX, so use the `hunt` and `walk`
+                console commands to discover it and `addr <n>` to store the result.
+
+        config T8_CCT_MIN_KELVIN
+            int "Fixture minimum colour temperature (K)"
+            default 2700
+
+        config T8_CCT_MAX_KELVIN
+            int "Fixture maximum colour temperature (K)"
+            default 12000
+
+        config T8_ENABLE_CONSOLE
+            bool "Enable the DMX debug console"
+            default y
+            help
+                A small esp_console REPL on the USB serial port with addr/dim/cct/hsi/raw/
+                dump/hunt/walk/stop. The only way to discover the fixture's DMX start
+                address, since it cannot be read over plain DMX.
+
+    endmenu
+
+    config T8_USE_EXTERNAL_ANTENNA
+        bool "Use the external U.FL antenna"
+        default n
+        help
+            The XIAO ESP32-C6 has an FM8625H RF switch: GPIO3 enables it, GPIO14 selects
+            onboard ceramic (0) or external U.FL (1). Enable this only if a U.FL antenna is
+            actually fitted; with the switch set to external and no antenna attached, range
+            collapses. GPIO3 and GPIO14 must never be repurposed on this board.
+
+    config ENABLE_MEMORY_PROFILING
+        bool "Enable Memory Profiling"
+        default n
+        help
+            Enable this option to include memory profiling features in the example.
+            This will allow you to monitor memory usage during runtime.
+
+endmenu
